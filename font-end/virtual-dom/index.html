@@ -1,48 +1,59 @@
 <html>
-    <header>
-        <title>virtual dom</title>
-    </header>
-    <body>
-        <div id="content">
-            
-        </div>
-    </body>
-    <script>
-        function Element(tagName,props,children){
-            this.tagName=tagName
-            this.props=props
-            this.children=children
+<header>
+    <title>virtual dom</title>
+    <style>
+        .li{
+            color:red;
         }
-        Element.prototype.render=function(){
-            var el=document.createElement(this.tagName)
-            var props=this.props
+    </style>
+</header>
 
-            for(var propName in props){
-                var propValue = props[propName]
-                el.setAttribute(propName,propValue)
+<body>
+    <div id="content">
+
+    </div>
+</body>
+<script>
+    class Element {
+        constructor(tagName, props, children) {
+            this.tagName = tagName
+            this.props = props
+            this.children = children
+        }
+        render() {
+            let el = document.createElement(this.tagName)
+            let props = this.props
+
+            for (let propName in props) {
+                let propValue = props[propName]
+                el.setAttribute(propName, propValue)
             }
 
-            var children=this.children ||[]
-
-            children.forEach(function(child){
-                var childEl=(child instanceof Element)?child.render():document.createTextNode(child)          
+            var children = this.children || []
+            children.forEach(child => {
+                let childEl = (child instanceof Element) ? child.render() : document.createTextNode(child)
                 el.appendChild(childEl)
             })
+
             return el
         }
-        function el(tagName,props,children){
-            return new Element(tagName,props,children)
-        }
 
+    }
 
+    let el=(tagName, props, children)=>{
+        let node = new Element(tagName, props, children)
+        return node
+    }
 
-        var ul=el('ul',{id:'list'},[
-            el('li',{class:'item'},['Item_1']),
-            el('li',{class:'item'},['Item_2']),
-            el('li',{class:'item'},['Item_3'])
-        ])
+    let ulNode=el('ul', { id: 'ul' },[
+        el('li',{class:'li'},['li_one']),
+        el('li',{class:'li'},['li_two']),
+        el('li',{class:'li'},['li_three'])
+    ])
 
-        var ulRoot=ul.render()
-        document.body.appendChild(ulRoot)
-    </script>
+    document.body.appendChild(ulNode.render())
+    
+
+</script>
+
 </html>
