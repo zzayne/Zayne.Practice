@@ -1,29 +1,62 @@
+
+const path = require('path')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
+
+var isProd = process.env.NODE_ENV === 'production'; 
+
+let pathsToClean = [
+    'dist',
+  ]
+  
+
 module.exports={
     entry:'./src/app.js',
     output:{
-        path:__dirname+'/dist',
-        filename:'app.bundle.js'
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].[hash].js'
     },
-    plugins:[new HtmlWebpackPlugin({
+    devServer:{
+        port:9000,
+        open:true,
+        hot: true
+    },
+    plugins:[
+        new CleanWebpackPlugin(pathsToClean),
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new HtmlWebpackPlugin({
         template: './src/index.html',
         filename: 'index.html',
         minify: {
             collapseWhitespace: true,
         },
         hash: true,      
+     
     }),
-    new ExtractTextPlugin('style.css')
+    
+    new ExtractTextPlugin({
+        filename:'style.css',
+        disable:!isProd
+    })
 ],
     module:{
-        rules:[{
+        rules:[
+        {
             test:/\.scss$/,
-            use:ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                //resolve-url-loader may be chained before sass-loader if necessary
-                use: ['css-loader', 'sass-loader']
-              })
-        }]
+            use: ['style-loader', 'css-loader', 'sass-loader']
+        },{
+            test: /\.png$/,
+            use: [
+              {
+                loader: 'file-loader',
+              },
+            ]
+          },
+            {test:/\.js$/,loader:'babel-loader',exclude:/node_modules/},
+            {test:/\.jsx$/,loader:'babel-loader',exclude:/node_modules/}
+        ]
     }
 }
