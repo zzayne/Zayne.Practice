@@ -4,7 +4,8 @@ export default class Root extends React.Component{
     render(){
         return(
             <div style={{textAlign:'center'}}>
-                <h1>Hello World</h1>
+
+                <img src="./images/money-bag.svg" alt="" height="50"/>
             </div>);
     }
 }
